@@ -28,6 +28,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Thread safe non blocking selector pool
+ *
+ * selector pool可以以两种方式进行工作：共享模式和非共享模式。一旦初始化完成，模式不可切换。
+ *
+ * 共享模式中，使用 blockingSelector + SHARED_SELECTOR 进行工作，前者在独立的线程中工作。工作线程调用read/write时，io操作由
+ * blockingSelector完成。如果io无法立刻完成，那么工作线程会被block，直到buffer中的数据发送完成。多个工作线程可以共享一个selector，即
+ * 不同工作线程的io事件都注册在SHARED_SELECTOR中。
+ *
+ * 如果是非共享模式，那么会有一个selector pool（FIFO队列）。io操作在NioSelectorPool中完成，即在工作线程中完成。
  */
 public class NioSelectorPool {
 

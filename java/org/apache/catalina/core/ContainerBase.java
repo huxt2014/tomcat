@@ -700,6 +700,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
                 throw new IllegalArgumentException(
                         sm.getString("containerBase.child.notUnique", child.getName()));
             child.setParent(this);  // May throw IAE
+            // 1.10.1
             children.put(child.getName(), child);
         }
 
@@ -710,6 +711,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
             if ((getState().isAvailable() ||
                     LifecycleState.STARTING_PREP.equals(getState())) &&
                     startChildren) {
+                // 1.10.2
                 child.start();
             }
         } catch (LifecycleException e) {

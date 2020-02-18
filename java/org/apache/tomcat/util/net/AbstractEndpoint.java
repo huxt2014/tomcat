@@ -403,6 +403,7 @@ public abstract class AbstractEndpoint<S,U> {
 
     /**
      * Acceptor thread count.
+     * 一个Endpoint有1个监听线程
      */
     protected int acceptorThreadCount = 1;
 
@@ -533,6 +534,7 @@ public abstract class AbstractEndpoint<S,U> {
 
     /**
      * Address for the server socket.
+     * 监听的address
      */
     private InetAddress address;
     public InetAddress getAddress() { return address; }
@@ -558,6 +560,7 @@ public abstract class AbstractEndpoint<S,U> {
      * Allows the server developer to specify the acceptCount (backlog) that
      * should be used for server sockets. By default, this value
      * is 100.
+     * 默认可以并发100个socket
      */
     private int acceptCount = 100;
     public void setAcceptCount(int acceptCount) { if (acceptCount > 0) this.acceptCount = acceptCount; }
@@ -664,6 +667,7 @@ public abstract class AbstractEndpoint<S,U> {
 
     /**
      * Maximum amount of worker threads.
+     * 默认有200个工作线程
      */
     private int maxThreads = 200;
     public void setMaxThreads(int maxThreads) {
@@ -705,6 +709,7 @@ public abstract class AbstractEndpoint<S,U> {
 
     /**
      * Max keep alive requests
+     * 默认100个并发请求
      */
     private int maxKeepAliveRequests=100; // as in Apache HTTPD server
     public int getMaxKeepAliveRequests() {
@@ -743,6 +748,7 @@ public abstract class AbstractEndpoint<S,U> {
 
     /**
      * Expose async IO capability.
+     * 可以支持异步io
      */
     private boolean useAsyncIO = false;
     public void setUseAsyncIO(boolean useAsyncIO) { this.useAsyncIO = useAsyncIO; }
@@ -886,6 +892,7 @@ public abstract class AbstractEndpoint<S,U> {
 
 
     public void createExecutor() {
+        // Endpoint有一个线程池
         internalExecutor = true;
         TaskQueue taskqueue = new TaskQueue();
         TaskThreadFactory tf = new TaskThreadFactory(getName() + "-exec-", daemon, getThreadPriority());
@@ -1068,12 +1075,14 @@ public abstract class AbstractEndpoint<S,U> {
             }
             SocketProcessorBase<S> sc = processorCache.pop();
             if (sc == null) {
+                // 3.8
                 sc = createSocketProcessor(socketWrapper, event);
             } else {
                 sc.reset(socketWrapper, event);
             }
             Executor executor = getExecutor();
             if (dispatch && executor != null) {
+                // 3.9
                 executor.execute(sc);
             } else {
                 sc.run();

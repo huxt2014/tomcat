@@ -1006,9 +1006,11 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
     @Override
     protected void initInternal() throws LifecycleException {
 
+        //
         super.initInternal();
 
         // Initialize utility executor
+        //
         reconfigureUtilityExecutor(getUtilityThreadsInternal(utilityThreads));
         register(utilityExecutor, "type=UtilityExecutor");
 
@@ -1055,6 +1057,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
             }
         }
         // Initialize our defined Services
+        //
         for (int i = 0; i < services.length; i++) {
             services[i].init();
         }

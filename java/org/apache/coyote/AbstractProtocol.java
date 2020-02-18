@@ -554,6 +554,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
         endpoint.setName(endpointName.substring(1, endpointName.length()-1));
         endpoint.setDomain(domain);
 
+        // 1.6.4
         endpoint.init();
     }
 
@@ -565,6 +566,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
             logPortOffset();
         }
 
+        // 1.6.6 start endpoint
         endpoint.start();
         monitorFuture = getUtilityExecutor().scheduleWithFixedDelay(
                 new Runnable() {
@@ -821,6 +823,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
                     }
                 }
                 if (processor == null) {
+                    // 3.11 最一开始会创建一个processor
                     processor = getProtocol().createProcessor();
                     register(processor);
                 }
@@ -833,6 +836,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
 
                 SocketState state = SocketState.CLOSED;
                 do {
+                    // 3.12
                     state = processor.process(wrapper, status);
 
                     if (state == SocketState.UPGRADING) {

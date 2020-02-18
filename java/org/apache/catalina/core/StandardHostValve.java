@@ -136,6 +136,7 @@ final class StandardHostValve extends ValveBase {
             // application for processing.
             try {
                 if (!response.isErrorReportRequired()) {
+                    // 3.18 如果用了默认的配置，那么
                     context.getPipeline().getFirst().invoke(request, response);
                 }
             } catch (Throwable t) {

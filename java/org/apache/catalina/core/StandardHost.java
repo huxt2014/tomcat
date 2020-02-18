@@ -66,6 +66,7 @@ public class StandardHost extends ContainerBase implements Host {
     public StandardHost() {
 
         super();
+        // 1.9.1 pipeline初始化为StandardPipeline，为pipeline设置basic valve
         pipeline.setBasic(new StandardHostValve());
 
     }
@@ -687,6 +688,7 @@ public class StandardHost extends ContainerBase implements Host {
     @Override
     public void addChild(Container child) {
 
+        // 1.10 为host添加一个container
         child.addLifecycleListener(new MemoryLeakTrackingListener());
 
         if (!(child instanceof Context))

@@ -55,6 +55,7 @@ public abstract class AbstractHttp11Protocol<S> extends AbstractProtocol<S> {
 
     public AbstractHttp11Protocol(AbstractEndpoint<S,?> endpoint) {
         super(endpoint);
+        // 1.4.4 为protocol/endpoint设置一个handler
         setConnectionTimeout(Constants.DEFAULT_CONNECTION_TIMEOUT);
         ConnectionHandler<S> cHandler = new ConnectionHandler<>(this);
         setHandler(cHandler);
@@ -937,6 +938,7 @@ public abstract class AbstractHttp11Protocol<S> extends AbstractProtocol<S> {
 
     @Override
     protected Processor createProcessor() {
+        // 3.11.1 协议相关的处理，委托给Processor
         Http11Processor processor = new Http11Processor(this, adapter);
         return processor;
     }

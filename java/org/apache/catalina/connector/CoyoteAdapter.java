@@ -60,6 +60,9 @@ import org.apache.tomcat.util.res.StringManager;
  *
  * @author Craig R. McClanahan
  * @author Remy Maucherat
+ *
+ * The adapter provides the link between the ProtocolHandler and the
+ * connector.
  */
 public class CoyoteAdapter implements Adapter {
 
@@ -340,6 +343,7 @@ public class CoyoteAdapter implements Adapter {
                 request.setAsyncSupported(
                         connector.getService().getContainer().getPipeline().isAsyncSupported());
                 // Calling the container
+                // 3.15 从这里开始pipeline的处理，即从Engine的pipeline开始处理
                 connector.getService().getContainer().getPipeline().getFirst().invoke(
                         request, response);
             }

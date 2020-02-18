@@ -215,6 +215,7 @@ public class StandardService extends LifecycleMBeanBase implements Service {
     public void addConnector(Connector connector) {
 
         synchronized (connectorsLock) {
+            // 1.5 添加一个Connector
             connector.setService(this);
             Connector results[] = new Connector[connectors.length + 1];
             System.arraycopy(connectors, 0, results, 0, connectors.length);
@@ -223,6 +224,7 @@ public class StandardService extends LifecycleMBeanBase implements Service {
 
             if (getState().isAvailable()) {
                 try {
+                    // 1.6 start connector
                     connector.start();
                 } catch (LifecycleException e) {
                     log.error(sm.getString(
@@ -514,11 +516,13 @@ public class StandardService extends LifecycleMBeanBase implements Service {
 
         super.initInternal();
 
+        //
         if (engine != null) {
             engine.init();
         }
 
         // Initialize any Executors
+        //
         for (Executor executor : findExecutors()) {
             if (executor instanceof JmxEnabled) {
                 ((JmxEnabled) executor).setDomain(getDomain());
@@ -530,6 +534,7 @@ public class StandardService extends LifecycleMBeanBase implements Service {
         mapperListener.init();
 
         // Initialize our defined Connectors
+        //
         synchronized (connectorsLock) {
             for (Connector connector : connectors) {
                 connector.init();

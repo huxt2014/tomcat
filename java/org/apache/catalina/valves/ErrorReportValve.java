@@ -89,6 +89,7 @@ public class ErrorReportValve extends ValveBase {
     public void invoke(Request request, Response response) throws IOException, ServletException {
 
         // Perform the request
+        // 3.17 处理下一个valve
         getNext().invoke(request, response);
 
         if (response.isCommitted()) {

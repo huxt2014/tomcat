@@ -32,6 +32,7 @@ import org.apache.tomcat.util.res.StringManager;
  * If a RejectedExecutionHandler is not specified a default one will be configured
  * and that one will always throw a RejectedExecutionException
  *
+ * 内部使用的线程池，继承自java.util.concurrent.ThreadPoolExecutor
  */
 public class ThreadPoolExecutor extends java.util.concurrent.ThreadPoolExecutor {
     /**

@@ -147,6 +147,34 @@ import org.apache.tomcat.util.res.StringManager;
  *
  * @see <a href="https://svn.apache.org/repos/asf/tomcat/trunk/test/org/apache/catalina/startup/TestTomcat.java">TestTomcat</a>
  * @author Costin Manolache
+ *
+ *
+ *                                    +-------------------------------------+
+ *                                    |  Engine                             |
+ *                                    |      +--------------------------+   |
+ *      connector                     |      |Host1 - www.example.com   |   |
+ *                    +-------+       |      |                          |   |
+ *                    |service|       |      |    +-----------------+   |   |
+ *                    +-------+       |      |    |Context1 - WebApp|   |   |
+ *      connector                     |      |    +------------------   |   |
+ *                                    |      |                          |   |
+ *                                    |      |    +-----------------+   |   |
+ *                                    |      |    |Context2 - WebApp|   |   |
+ *                                    |      |    +-----------------+   |   |
+ *                                    |      |                          |   |
+ *                                    |      |    ...                   |   |
+ *                                    |      +--------------------------+   |
+ *                                    |                                     |
+ *                                    |      +--------------------------+   |
+ *                                    |      |Host2 - www.example2.com  |   |
+ *                                    |      |                          |   |
+ *                                    |      |    ...                   |   |
+ *                                    |      +--------------------------+   |
+ *                                    |                                     |
+ *                                    |      ...                            |
+ *                                    +-------------------------------------+
+ *
+ *
  */
 public class Tomcat {
 
@@ -172,6 +200,7 @@ public class Tomcat {
     private boolean addDefaultWebXmlToWebapp = true;
 
     public Tomcat() {
+        // 1.1 初始化，基本上什么东西都没做。具体的初始化工作需要由外部触发。
         ExceptionUtils.preload();
     }
 
@@ -451,7 +480,9 @@ public class Tomcat {
      * @throws LifecycleException Start error
      */
     public void start() throws LifecycleException {
+        // 2.1 初始化一个server，这个函数也可以在start之前调用，用于更灵活的配置。
         getServer();
+        // 2.2 从server开始start
         server.start();
     }
 
@@ -583,6 +614,7 @@ public class Tomcat {
             return (Host) engine.findChildren()[0];
         }
 
+        // 1.9 为engine设置一个host，一个engine可能有多个host
         Host host = new StandardHost();
         host.setName(hostname);
         getEngine().addChild(host);
@@ -598,9 +630,11 @@ public class Tomcat {
         if (service.getContainer() != null) {
             return service.getContainer();
         }
+        // 1.7 为service设置一个engine，只会有一个engine
         Engine engine = new StandardEngine();
         engine.setName( "Tomcat" );
         engine.setDefaultHost(hostname);
+        // 1.8 设置realm
         engine.setRealm(createDefaultRealm());
         service.setContainer(engine);
         return engine;
@@ -619,6 +653,7 @@ public class Tomcat {
 
         System.setProperty("catalina.useNaming", "false");
 
+        // 1.2 开始具体的初始化时，通常会首先生成server，一个Tomcat对应一个Server
         server = new StandardServer();
 
         initBaseDir();
@@ -628,6 +663,7 @@ public class Tomcat {
 
         server.setPort( -1 );
 
+        // 1.3 为server添加一个service。一个server可能有多个service。
         Service service = new StandardService();
         service.setName("Tomcat");
         server.addService(service);
